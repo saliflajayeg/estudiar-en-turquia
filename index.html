@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estudiar en Turquía · Asesoría de Viajes</title>
+<meta name="description" content="Te acompañamos desde Guinea Ecuatorial hasta tu universidad en Turquía: inscripción gratuita, admisión, visado y recogida en el aeropuerto.">
+<meta property="og:title" content="Estudiar en Turquía · Asesoría de Viajes">
+<meta property="og:description" content="Admisión universitaria, visado y llegada a Turquía para estudiantes de Guinea Ecuatorial.">
+<meta property="og:image" content="img/hero-galata.jpg">
+<meta name="theme-color" content="#0B1630">
+<link rel="icon" href="img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="img/hero-galata.jpg">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="wrap nav__in">
+    <a href="#inicio" class="brand">
+      <img src="img/logo.png" alt="" width="40" height="40">
+      <span><strong>Estudiar en Turquía</strong><small>por Asesoría de Viajes</small></span>
+    </a>
+    <nav class="nav__links" id="menu">
+      <a href="#inicio">Buscar carrera</a>
+      <a href="#proceso">Cómo funciona</a>
+      <a href="#precios">Precios</a>
+      <a href="#padres">Para padres</a>
+      <a href="#faq">Preguntas</a>
+      <a href="#cita" class="btn btn--red btn--sm">Reservar cita</a>
+    </nav>
+    <button class="nav__burger" id="burger" aria-label="Abrir menú" aria-expanded="false"><span></span><span></span></button>
+  </div>
+</header>
+
+<!-- ============ HERO + BUSCADOR ============ -->
+<section class="hs" id="inicio">
+  <div class="hs__bg"><img src="img/hero-galata.jpg" alt="La Torre de Gálata sobre los tejados de Estambul con gaviotas en vuelo"></div>
+  <div class="hs__shade"></div>
+  <div class="wrap hs__in">
+    <p class="hs__kicker"><span class="dot"></span> Universidades en Turquía para estudiantes de Guinea Ecuatorial</p>
+    <h1>¿Qué quieres <em>estudiar?</em></h1>
+    <p class="hs__lead">Busca tu carrera y compara al momento universidades, precios e idiomas. Después te guiamos en cada paso, y la inscripción es gratuita.</p>
+
+    <form class="sbar" id="sbar" role="search" autocomplete="off">
+      <div class="sbar__f sbar__f--q">
+        <label for="hq">Carrera</label>
+        <input id="hq" type="text" placeholder="Medicina, Derecho, Ingeniería…" aria-autocomplete="list" aria-controls="sugg" aria-expanded="false" enterkeyhint="search">
+        <ul class="sugg" id="sugg" role="listbox" hidden></ul>
+      </div>
+      <div class="sbar__f">
+        <label for="hdeg">Nivel</label>
+        <select id="hdeg">
+          <option value="">Todos</option>
+          <option value="B" selected>Licenciatura</option>
+          <option value="M">Máster</option>
+          <option value="D">Doctorado</option>
+          <option value="A">Formación Profesional (FP)</option>
+        </select>
+      </div>
+      <div class="sbar__f">
+        <label for="hlang">Idioma</label>
+        <select id="hlang">
+          <option value="">Inglés o turco</option>
+          <option value="Inglés">Inglés</option>
+          <option value="Turco">Turco</option>
+        </select>
+      </div>
+      <button class="sbar__go" type="submit" aria-label="Buscar">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <span>Buscar</span>
+      </button>
+    </form>
+
+    <div class="hs__pop" id="pop"><span>Lo más buscado:</span></div>
+
+    <ul class="hs__stats">
+      <li><strong id="stP">4.000+</strong><span>carreras</span></li>
+      <li><strong id="stU">49</strong><span>universidades</span></li>
+      <li><strong>0 FCFA</strong><span>inscripción</span></li>
+      <li><strong>100%</strong><span>en español</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ RESULTADOS ============ -->
+<section class="res" id="resultados" aria-live="polite">
+  <div class="wrap">
+
+    <!-- Estado inicial: carreras populares -->
+    <div id="resHome">
+      <div class="res__head">
+        <div>
+          <p class="eyebrow">Empieza por aquí</p>
+          <h2>Carreras más buscadas</h2>
+        </div>
+        <a class="link-arrow" href="programas.html">Ver todas las carreras →</a>
+      </div>
+      <div class="pgrid" id="popGrid"></div>
+    </div>
+
+    <!-- Resultados de búsqueda -->
+    <div id="resList" hidden>
+      <div class="rsum">
+        <div class="rsum__title">
+          <p class="eyebrow" id="rKicker">Resultados</p>
+          <h2 id="rTitle"></h2>
+          <button class="link" id="rClear" type="button">← Nueva búsqueda</button>
+        </div>
+        <dl class="kpis">
+          <div><dt>Universidades</dt><dd id="kUnis">—</dd></div>
+          <div><dt>Precio desde</dt><dd id="kFrom">—</dd></div>
+          <div><dt>Idiomas</dt><dd id="kLangs">—</dd></div>
+        </dl>
+      </div>
+
+      <div class="rbar">
+        <div class="rtabs" id="rTabs" role="tablist" aria-label="Nivel"></div>
+        <div class="rbar__right">
+          <div class="seg" role="group" aria-label="Moneda">
+            <button class="seg__b is-on" data-cur="xaf" type="button">FCFA</button>
+            <button class="seg__b" data-cur="usd" type="button">USD</button>
+          </div>
+          <select id="rSort" class="fselect fselect--sm" aria-label="Ordenar">
+            <option value="asc">Más baratas primero</option>
+            <option value="desc">Más caras primero</option>
+            <option value="az">Universidad A–Z</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="rtable" id="rRows"></div>
+
+      <div class="rfoot">
+        <button class="btn btn--line" id="rMore" type="button" hidden>Mostrar más</button>
+        <a class="link-arrow" id="rAll" href="programas.html">Filtros avanzados (ciudad, universidad, precio) →</a>
+      </div>
+    </div>
+
+    <!-- Siguiente paso -->
+    <div class="next" id="next">
+      <div class="next__intro">
+        <p class="eyebrow">Tu siguiente paso</p>
+        <h3>¿Ya tienes tu carrera? Así sigue.</h3>
+      </div>
+      <ol class="next__steps">
+        <li><span>1</span><div><strong>Inscripción gratuita</strong><p>Nos envías tu hoja académica y tu título de bachillerato.</p></div></li>
+        <li><span>2</span><div><strong>Carta condicional</strong><p>La universidad te responde en 1 a 3 semanas.</p></div></li>
+        <li><span>3</span><div><strong>Tú decides</strong><p>Solo entonces pagas el depósito de la universidad.</p></div></li>
+        <li><span>4</span><div><strong>Visado y viaje</strong><p>Embajada, billete y recogida en el aeropuerto.</p></div></li>
+      </ol>
+      <a href="#cita" class="btn btn--red next__cta">Empezar gratis</a>
+    </div>
+  </div>
+</section>
+
+<!-- Panel “Tu elección” -->
+<div class="drawer" id="drawer" hidden>
+  <div class="drawer__bg" data-close></div>
+  <aside class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="dProg">
+    <button class="drawer__x" type="button" data-close aria-label="Cerrar">×</button>
+    <div class="drawer__head" id="dHead">
+      <span class="drawer__grab" aria-hidden="true"></span>
+      <p class="eyebrow">Tu elección</p>
+      <h3 id="dProg"></h3>
+      <p class="drawer__uni" id="dUni"></p>
+      <div class="drawer__tags" id="dTags"></div>
+    </div>
+    <div class="drawer__price">
+      <div><small id="dPer">Matrícula por año</small><strong id="dXaf"></strong><span id="dUsd"></span></div>
+      <p id="dOrig"></p>
+    </div>
+    <h4>Tu siguiente paso</h4>
+    <ol class="dsteps">
+      <li class="is-now"><b>Hoy · Gratis</b>Inscripción: nos envías tu hoja académica y tu título de bachillerato.</li>
+      <li><b>1–3 semanas</b>La universidad te envía la carta de admisión condicional.</li>
+      <li><b>Tú decides</b>Solo si sigues adelante, pagas el depósito que pide la universidad (≈ 1.000 USD).</li>
+      <li><b>Visado y viaje</b>Carta oficial, visado en la embajada, billete y recogida en el aeropuerto.</li>
+    </ol>
+    <a class="btn btn--red btn--block" id="dWa" target="_blank" rel="noopener" href="#">Empezar mi inscripción gratuita</a>
+    <a class="btn btn--line btn--block" id="dCita" href="#cita">Prefiero una cita en la oficina</a>
+    <p class="fine">Precio orientativo del curso 2025–26. Te confirmamos el precio exacto antes de que pagues nada.</p>
+  </aside>
+</div>
+
+<!-- ============ PROCESO ============ -->
+<section class="section section--navy" id="proceso">
+  <div class="wrap">
+    <div class="head reveal">
+      <p class="eyebrow eyebrow--light">Cómo funciona</p>
+      <h2>De la inscripción al aeropuerto, <em>paso a paso.</em></h2>
+      <p class="lead">Nuestro método está pensado para que no pagues nada importante hasta que tengas en la mano una respuesta de la universidad.</p>
+    </div>
+
+    <ol class="steps">
+      <li class="step reveal">
+        <span class="step__n">01</span>
+        <div>
+          <p class="step__tag step__tag--free">Gratis</p>
+          <h3>Inscripción gratuita</h3>
+          <p>Ven a la oficina o escríbenos. Elegimos juntos la carrera y las universidades, y presentamos tu solicitud con tu hoja académica y tu título de bachillerato traducidos.</p>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step__n">02</span>
+        <div>
+          <p class="step__tag">1–3 semanas</p>
+          <h3>Carta de admisión condicional</h3>
+          <p>La universidad estudia tu expediente y te envía una primera carta de admisión. Es la prueba de que te aceptan, a condición de confirmar tu plaza.</p>
+        </div>
+      </li>
+      <li class="step step--key reveal">
+        <span class="step__n">03</span>
+        <div>
+          <p class="step__tag step__tag--gold">Tú decides</p>
+          <h3>Decides y pagas lo que pide la universidad</h3>
+          <p>Con la carta en la mano, el estudiante y su familia deciden con calma. Solo si queréis continuar, se paga el depósito que exige la universidad (normalmente alrededor de 1.000 USD). La matrícula completa del año no se paga desde Guinea.</p>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step__n">04</span>
+        <div>
+          <p class="step__tag">Tras el pago</p>
+          <h3>Carta de admisión oficial</h3>
+          <p>La universidad emite la carta de admisión oficial (carta de invitación). Es el documento clave para solicitar el visado de estudiante.</p>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step__n">05</span>
+        <div>
+          <p class="step__tag">Embajada de Turquía</p>
+          <h3>Documentos y visado</h3>
+          <p>Reunimos contigo el resto del expediente: antecedentes penales, certificado médico, seguro de viaje, homologación y documentos del tutor. Te acompañamos a la embajada a solicitar el visado.</p>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step__n">06</span>
+        <div>
+          <p class="step__tag">Bienvenido</p>
+          <h3>Viaje y recogida en el aeropuerto</h3>
+          <p>Te ayudamos con el billete y te recogemos al llegar a Turquía. No aterrizas solo: alguien te espera para llevarte a tu destino.</p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="callout reveal">
+      <p><strong>La regla de oro:</strong> la inscripción es gratuita y no se paga a la universidad hasta tener la carta de admisión condicional. Así la familia decide con información real, no con promesas.</p>
+      <a href="#cita" class="btn btn--red">Empezar mi inscripción</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRECIOS ============ -->
+<section class="section section--cream" id="precios">
+  <div class="wrap">
+    <div class="head head--center reveal">
+      <p class="eyebrow">Nuestros servicios</p>
+      <h2>Dos formas de ir a Turquía.<br><em>Precios claros desde el principio.</em></h2>
+    </div>
+
+    <div class="plans">
+      <article class="plan reveal">
+        <p class="plan__kicker">Opción 1</p>
+        <h3>Gestión completa</h3>
+        <p class="plan__desc">Tú eliges tu universidad y la pagas directamente. Nosotros nos encargamos de todos los trámites.</p>
+        <p class="plan__price"><span class="money" data-xaf="302000"></span><small>honorarios de la agencia</small></p>
+        <ul class="ticks">
+          <li>Inscripción gratuita y elección de universidad</li>
+          <li>Seguimiento de la carta condicional y la oficial</li>
+          <li>Preparación de todo el expediente de visado</li>
+          <li>Acompañamiento a la embajada</li>
+          <li>Recogida en el aeropuerto en Turquía</li>
+        </ul>
+        <details class="plan__more">
+          <summary>¿Qué otros gastos hay? (ejemplo real)</summary>
+          <table class="costs">
+            <tr><td>Traducción de documentos</td><td>10.000 / página</td></tr>
+            <tr><td>Antecedentes penales</td><td>8.000</td></tr>
+            <tr><td>Certificado médico</td><td>22.000</td></tr>
+            <tr><td>Homologación en embajada</td><td>13.000–14.000 / pág.</td></tr>
+            <tr><td>Seguro de viaje</td><td>≈ 40.000</td></tr>
+            <tr><td>Visado (embajada de Turquía)</td><td>80.000</td></tr>
+            <tr><td>Depósito de la universidad</td><td>≈ 1.000 USD (650.000)</td></tr>
+            <tr><td>Billete de avión</td><td>600.000–700.000</td></tr>
+            <tr class="costs__total"><td>Total aproximado con honorarios</td><td>≈ 1.866.000 FCFA</td></tr>
+          </table>
+          <p class="fine">Importes en FCFA. La matrícula anual se paga aparte, directamente a la universidad.</p>
+        </details>
+        <a href="#cita" class="btn btn--navy btn--block">Pedir información</a>
+      </article>
+
+      <article class="plan plan--feat reveal">
+        <p class="plan__badge">Más elegido por las familias</p>
+        <p class="plan__kicker">Opción 2</p>
+        <h3>Paquete Beca · Todo incluido</h3>
+        <p class="plan__desc">Un solo pago cubre toda la carrera: 1 año de inglés + 4 años de licenciatura.</p>
+        <p class="plan__price"><span class="money" data-xaf="4500000"></span><small>pago único · 5 años de estudios</small></p>
+        <ul class="ticks">
+          <li><strong>1 año de inglés + 4 años de carrera</strong></li>
+          <li>Cualquier carrera (excepto Medicina y Pilotaje)</li>
+          <li>Toda la documentación y las traducciones</li>
+          <li>Visado y honorarios de la agencia incluidos</li>
+          <li>Recogida en el aeropuerto</li>
+        </ul>
+        <p class="plan__compare">Comparación: una universidad normal cuesta unos <span class="money" data-xaf="1500000"></span> al año, es decir <span class="money" data-xaf="7500000"></span> en 5 años.</p>
+        <p class="plan__no">No incluye: billete de avión, alojamiento, comida ni gastos personales.</p>
+        <a href="#cita" class="btn btn--red btn--block">Reservar cita para la Beca</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CIUDADES ============ -->
+<section class="cities" aria-label="Ciudades">
+  <div class="city city--big reveal" style="--img:url(img/hero-galata.jpg)">
+    <div><p class="eyebrow eyebrow--light">Estambul</p><h3>La ciudad entre dos continentes</h3><p>La mayor oferta de universidades, vida universitaria intensa y una gran comunidad africana.</p></div>
+  </div>
+  <div class="city reveal" style="--img:url(img/ankara.jpg)">
+    <div><p class="eyebrow eyebrow--light">Ankara</p><h3>La capital tranquila</h3><p>Universidades de prestigio y un coste de vida más bajo.</p></div>
+  </div>
+  <div class="city reveal" style="--img:url(img/antalya.jpg)">
+    <div><p class="eyebrow eyebrow--light">Antalya</p><h3>Estudiar junto al mar</h3><p>Clima mediterráneo y un ambiente más relajado.</p></div>
+  </div>
+  <div class="city reveal" style="--img:url(img/cappadocia.jpg)">
+    <div><p class="eyebrow eyebrow--light">Y mucho más</p><h3>Un país para descubrir</h3><p>Capadocia, el Egeo, el Mar Negro… tus vacaciones también cuentan.</p></div>
+  </div>
+</section>
+
+<!-- ============ PADRES ============ -->
+<section class="section" id="padres">
+  <div class="wrap">
+    <div class="split split--rev">
+      <div class="split__media reveal">
+        <figure class="portrait">
+          <img src="img/grad-woman.jpg" alt="Estudiante sonriente con toga y birrete de graduación" loading="lazy">
+          <figcaption>“El día de la graduación empieza el día de la inscripción.”</figcaption>
+        </figure>
+      </div>
+      <div class="split__text reveal">
+        <p class="eyebrow">Para padres y tutores</p>
+        <h2>Enviar a un hijo lejos es una gran decisión. Por eso le damos la transparencia que merece.</h2>
+        <p class="lead">Os explicamos cada pago antes de hacerlo, os entregamos un presupuesto por escrito y firmamos un contrato de servicios. Podéis venir a la oficina las veces que haga falta.</p>
+
+        <h3 class="mini">Lo que la embajada pide al tutor o financiador</h3>
+        <ul class="docs">
+          <li><span>01</span>Documento de identidad</li>
+          <li><span>02</span>Contrato de trabajo</li>
+          <li><span>03</span>Documento de propiedad</li>
+          <li><span>04</span>Extracto bancario de 1 año con saldo mínimo de 5.000.000 FCFA</li>
+        </ul>
+        <h3 class="mini">Lo que prepara el estudiante</h3>
+        <ul class="docs docs--soft">
+          <li><span>✓</span>Pasaporte en vigor</li>
+          <li><span>✓</span>Hoja académica y título de bachillerato</li>
+          <li><span>✓</span>Antecedentes penales y certificado médico</li>
+          <li><span>✓</span>Seguro de viaje</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BANDA ============ -->
+<section class="band" style="--img:url(img/caps.jpg)">
+  <div class="wrap band__in reveal">
+    <h2>Miles de estudiantes africanos ya se gradúan en Turquía.<br><em>El próximo puedes ser tú.</em></h2>
+    <a href="#cita" class="btn btn--red">Hablar con un asesor</a>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section" id="faq">
+  <div class="wrap wrap--narrow">
+    <div class="head head--center reveal">
+      <p class="eyebrow">Preguntas frecuentes</p>
+      <h2>Lo que más nos preguntan</h2>
+    </div>
+    <div class="faq reveal">
+      <details><summary>¿De verdad la inscripción es gratis?</summary><p>Sí. Presentar tu solicitud a la universidad no tiene coste. Solo pagarás la traducción de tu hoja académica y del bachillerato, que la universidad necesita para estudiar tu expediente.</p></details>
+      <details><summary>¿Cuándo tengo que pagar a la universidad?</summary><p>Solo después de recibir la carta de admisión condicional, y solo si decides continuar. Lo que se paga es el depósito que pide la universidad para emitir la carta oficial (normalmente unos 1.000 USD). La matrícula completa no se paga desde Guinea.</p></details>
+      <details><summary>¿Necesito saber inglés o turco?</summary><p>No es obligatorio al empezar. Muchas universidades ofrecen un año preparatorio de inglés, que ya está incluido en nuestro Paquete Beca.</p></details>
+      <details><summary>¿Cuánto tarda todo el proceso?</summary><p>Lo normal es entre 1 y 3 meses desde la inscripción hasta el visado, según la universidad y la embajada. Te recomendamos empezar al menos 3 meses antes del inicio del curso (septiembre o febrero).</p></details>
+      <details><summary>¿Qué pasa si me deniegan el visado?</summary><p>Preparamos el expediente con mucho cuidado para evitarlo. Si ocurre, analizamos el motivo contigo y vemos las opciones para volver a presentar la solicitud. Te lo explicamos todo por escrito en el contrato.</p></details>
+      <details><summary>¿Dónde vivirá mi hijo o hija?</summary><p>Las universidades tienen residencias y hay pisos compartidos de estudiantes. Os orientamos según el presupuesto de la familia. El alojamiento no está incluido en nuestros precios.</p></details>
+      <details><summary>¿Puedo pagar en efectivo?</summary><p>Sí. Los pagos a la agencia se hacen en la oficina, en francos CFA, y siempre con recibo.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CITA ============ -->
+<section class="section section--navy cita" id="cita">
+  <div class="wrap">
+    <div class="split">
+      <div class="split__text reveal">
+        <p class="eyebrow eyebrow--light">Reserva tu cita</p>
+        <h2>Ven a la oficina y salimos con un plan.</h2>
+        <p class="lead">Una primera cita de unos 30 minutos, sin compromiso, para estudiantes y padres. Revisamos tus notas, te recomendamos universidades y te damos un presupuesto por escrito.</p>
+        <ul class="contact">
+          <li><span class="contact__k">WhatsApp</span><a href="https://wa.me/905466175501" target="_blank" rel="noopener">+90 546 617 55 01</a></li>
+          <li><span class="contact__k">Oficina</span><span>Malabo, Guinea Ecuatorial</span></li>
+          <li><span class="contact__k">Horario</span><span>Lunes a viernes 9:00–18:00 · Sábados 9:00–13:00</span></li>
+        </ul>
+      </div>
+
+      <form class="form reveal" id="citaForm" novalidate>
+        <h3>Solicitar cita</h3>
+        <div class="who" role="radiogroup" aria-label="Soy">
+          <label><input type="radio" name="who" value="Estudiante" checked><span>Soy estudiante</span></label>
+          <label><input type="radio" name="who" value="Padre / madre / tutor"><span>Soy padre o tutor</span></label>
+        </div>
+        <label class="f">Nombre completo<input name="nombre" required autocomplete="name" placeholder="Ej.: María Nchama"></label>
+        <label class="f">Teléfono / WhatsApp<input name="tel" required type="tel" autocomplete="tel" placeholder="+240 …"></label>
+        <div class="f2">
+          <label class="f">Día preferido<input name="fecha" type="date" required></label>
+          <label class="f">Hora<select name="hora"><option>Mañana (9–12 h)</option><option>Mediodía (12–15 h)</option><option>Tarde (15–18 h)</option></select></label>
+        </div>
+        <label class="f">Me interesa<select name="interes"><option>Paquete Beca · todo incluido</option><option>Gestión completa (pago universidad aparte)</option><option>Aún no lo sé, quiero información</option></select></label>
+        <label class="f">Carrera o mensaje (opcional)<textarea name="msg" rows="3" placeholder="Ej.: Quiero estudiar Ingeniería Informática en Estambul"></textarea></label>
+        <p class="form__err" id="formErr" hidden>Por favor, completa tu nombre, teléfono y el día.</p>
+        <button class="btn btn--red btn--block" type="submit">Enviar solicitud por WhatsApp</button>
+        <p class="fine fine--light">Se abrirá WhatsApp con tu solicitud ya escrita. Te confirmamos la cita en el mismo chat.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="foot">
+  <div class="wrap foot__in">
+    <div class="brand brand--foot">
+      <img src="img/logo.png" alt="" width="48" height="48">
+      <span><strong>Estudiar en Turquía</strong><small>por Asesoría de Viajes · Guinea Ecuatorial</small></span>
+    </div>
+    <p class="foot__note">Precios orientativos sujetos a cambios de las universidades, la embajada y el tipo de cambio. Fotografías: Unsplash.</p>
+    <p class="foot__copy">© <span id="year"></span> Asesoría de Viajes</p>
+  </div>
+</footer>
+
+<a class="wa" href="https://wa.me/905466175501?text=Hola%2C%20quiero%20informaci%C3%B3n%20para%20estudiar%20en%20Turqu%C3%ADa" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+  <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><path fill="currentColor" d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.4.7 4.7 1.9 6.7L3 29l6.9-2.1c1.9 1 4 1.6 6.1 1.6 7 0 12.7-5.6 12.7-12.6S23 3 16 3zm0 23.1c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4.1 1.2 1.2-4-.3-.4c-1.1-1.7-1.6-3.6-1.6-5.6 0-5.8 4.7-10.5 10.6-10.5s10.6 4.7 10.6 10.5S21.9 26.1 16 26.1zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.3.3-.6.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.3 1.4 3.5c.2.2 2.4 3.6 5.8 5 .8.4 1.4.6 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg>
+</a>
+
+<script src="data/programas.js" defer></script>
+<script src="app.js" defer></script>
+</body>
+</html>
