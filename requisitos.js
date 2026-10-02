@@ -1,103 +1,135 @@
 // ===== Precios (FCFA). Cambiar aquí si varían =====
 const PRICE = {
   tr: 10000,              // traducción al inglés, por página
-  jus: 2000,              // Ministerio de Justicia, por documento (se paga por el original y otra vez por la traducción)
-  ext: 2000,              // Asuntos Exteriores, por documento (original y traducción)
-  emb: [13000, 14000],    // Embajada de Turquía, por página, el día de la cita
+  jus: 2000,              // Ministerio de Justicia: por el original y otra vez por la traducción
+  ext: 2000,              // Asuntos Exteriores: por el original y otra vez por la traducción
+  emb: [13000, 14000],    // Embajada de Turquía: legalización por documento, el día de la cita
+  visa: 80000,            // visado de estudiante (embajada de Turquía)
   res: 2000,              // reserva de billete de ida
 };
 const WHATSAPP = "905466175501";
 
-// Documentos que se traducen y legalizan (páginas típicas, ajustables)
+// Documentos de la calculadora.
+// req: lo que cuesta solicitarlo (null = depende del centro, a consultar)
+// pages: páginas a traducir (0 = no se traduce ni se legaliza)
+// has: valor inicial de “Lo tengo”; optional: se puede quitar (selectividad)
 const DOCS = [
-  { id: "bach", name: "Certificado de bachillerato", pages: 1, on: true },
-  { id: "hoja", name: "Hoja académica", pages: 2, on: true },
-  { id: "legest", name: "Certificado de legalización de estudios", pages: 1, on: true },
-  { id: "med", name: "Certificado médico", pages: 2, on: true },
-  { id: "ant", name: "Antecedentes penales", pages: 1, on: true },
-  { id: "sel", name: "Selectividad", pages: 1, on: false, optional: true },
-];
-// Lo que cuesta conseguir los documentos y el visado
-const OTHERS = [
-  { name: "Antecedentes penales (obtenerlo)", cost: 8000 },
-  { name: "Certificado médico (obtenerlo)", cost: 22000 },
-  { name: "Seguro de viaje de 1 año", cost: 40000, approx: true },
-  { name: "Reserva de billete de ida", cost: PRICE.res },
-  { name: "Visado (embajada de Turquía)", cost: 80000 },
+  { id: "bach", name: "Certificado de bachillerato", req: null, pages: 1, has: true },
+  { id: "hoja", name: "Hoja académica", req: null, pages: 2, has: true },
+  { id: "legest", name: "Certificado de legalización de estudios", req: null, pages: 1, has: false },
+  { id: "med", name: "Certificado médico", req: 22000, pages: 2, has: false },
+  { id: "ant", name: "Antecedentes penales", req: 8000, pages: 1, has: false },
+  { id: "sel", name: "Selectividad", req: null, pages: 1, has: true, optional: true, on: false },
+  { id: "seg", name: "Seguro de viaje de 1 año", req: 40000, approx: true, pages: 0, has: false },
+  { id: "bil", name: "Reserva de billete de ida", req: PRICE.res, pages: 0, has: false },
 ];
 
 const $ = (id) => document.getElementById(id);
 const g = (n) => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 const f = (n) => `${g(n)} FCFA`;
 const range = ([a, b]) => (a === b ? f(a) : `${g(a)} – ${g(b)} FCFA`);
-const rangeN = ([a, b]) => (a === b ? g(a) : `${g(a)}–${g(b)}`); // sin "FCFA" (tabla)
+const LEG = 2 * PRICE.jus + 2 * PRICE.ext; // original + traducción en Justicia y en Exteriores
 
 // ===== Precios en el texto =====
 document.querySelectorAll("[data-price]").forEach((el) => {
   const k = el.dataset.price;
   el.textContent = k === "emb" ? range(PRICE.emb) : k === "jus" || k === "ext" ? `${g(PRICE[k])} + ${g(PRICE[k])} FCFA` : f(PRICE[k]);
 });
-const docCost = (d) => {
+$("exOne").textContent = f(PRICE.tr + LEG);
+
+// ===== Estado (se recuerda en este dispositivo) =====
+const saved = (() => { try { return JSON.parse(localStorage.getItem("req-calc2") || "null"); } catch { return null; } })();
+DOCS.forEach((d) => { if (d.on === undefined) d.on = true; if (saved?.[d.id]) Object.assign(d, saved[d.id]); });
+
+const costOf = (d) => {
+  const req = d.has ? 0 : d.req;               // null si no se sabe
   const tr = PRICE.tr * d.pages;
-  const leg = 2 * PRICE.jus + 2 * PRICE.ext; // original + traducción en los dos ministerios
-  const emb = PRICE.emb.map((p) => p * d.pages);
-  return { tr, leg, emb, tot: [tr + leg + emb[0], tr + leg + emb[1]] };
+  const leg = d.pages ? LEG : 0;
+  return { req, tr, leg, tot: (req || 0) + tr + leg, pending: !d.has && d.req == null };
 };
-$("exOne").textContent = range(docCost({ pages: 1 }).tot);
 
-// ===== Calculadora =====
-const saved = (() => { try { return JSON.parse(localStorage.getItem("req-calc") || "null"); } catch { return null; } })();
-if (saved) DOCS.forEach((d) => { if (saved[d.id]) Object.assign(d, saved[d.id]); });
-let incOther = saved?.incOther ?? true;
-$("incOther").checked = incOther;
-
-function renderRows() {
-  $("crows").innerHTML = DOCS.map((d) => {
-    const c = docCost(d);
-    return `<div class="crow${d.on ? "" : " is-off"}" role="row" data-id="${d.id}">
-      <span class="crow__doc" role="cell"><label class="mini-switch"><input type="checkbox" data-act="on" ${d.on ? "checked" : ""} aria-label="Incluir ${d.name}"><span></span></label><span>${d.name}${d.optional ? ' <em class="tag-opt">Opcional</em>' : ""}</span></span>
-      <span role="cell" class="crow__pages"><button type="button" data-act="minus" aria-label="Menos páginas">−</button><b>${d.pages}</b><button type="button" data-act="plus" aria-label="Más páginas">+</button></span>
-      <span role="cell" data-l="Traducción">${g(c.tr)}</span>
-      <span role="cell" data-l="Legalizar">${g(c.leg)}</span>
-      <span role="cell" data-l="Embajada">${rangeN(c.emb)}</span>
-      <span role="cell" data-l="Total" class="crow__tot">${rangeN(c.tot)}</span>
-    </div>`;
+function renderList() {
+  $("clist").innerHTML = DOCS.map((d) => {
+    const c = costOf(d);
+    const off = d.optional && !d.on;
+    const chips = [
+      !d.has ? `<span class="cchip cchip--req"><small>Solicitarlo</small>${c.pending ? "a consultar" : (d.approx ? "≈ " : "") + f(c.req)}</span>` : "",
+      d.pages ? `<span class="cchip"><small>Traducir (${d.pages} pág.)</small>${f(c.tr)}</span>` : "",
+      d.pages ? `<span class="cchip"><small>Legalizar</small>${f(c.leg)}</span>` : "",
+    ].join("");
+    return `<article class="cdoc${off ? " is-off" : ""}" data-id="${d.id}">
+      <div class="cdoc__top">
+        <div class="cdoc__name">
+          ${d.optional ? `<label class="mini-switch"><input type="checkbox" data-act="on" ${d.on ? "checked" : ""} aria-label="Incluir ${d.name}"><span></span></label>` : ""}
+          <h3>${d.name}${d.optional ? ' <em class="tag-opt">Opcional</em>' : ""}</h3>
+          ${d.pages ? "" : '<span class="cdoc__note">No se traduce</span>'}
+        </div>
+        <div class="have" role="group" aria-label="¿Tienes este documento?">
+          <button type="button" data-act="has" data-v="1" class="${d.has ? "is-on" : ""}" ${off ? "disabled" : ""}>Lo tengo</button>
+          <button type="button" data-act="has" data-v="0" class="${!d.has ? "is-on" : ""}" ${off ? "disabled" : ""}>No lo tengo</button>
+        </div>
+      </div>
+      ${off ? '<p class="cdoc__skip">No se incluye en el cálculo.</p>' : `<div class="cdoc__bottom">
+        ${d.pages ? `<span class="crow__pages" aria-label="Páginas"><button type="button" data-act="minus" aria-label="Menos páginas">−</button><b>${d.pages} pág.</b><button type="button" data-act="plus" aria-label="Más páginas">+</button></span>` : ""}
+        <div class="cchips">${chips}</div>
+        <strong class="cdoc__tot">${f(c.tot)}${c.pending ? '<small>+ solicitud</small>' : ""}</strong>
+      </div>`}
+    </article>`;
   }).join("");
 }
+
 function renderSum() {
-  const on = DOCS.filter((d) => d.on);
-  const s = on.reduce((a, d) => { const c = docCost(d); a.tr += c.tr; a.jus += 2 * PRICE.jus; a.ext += 2 * PRICE.ext; a.emb[0] += c.emb[0]; a.emb[1] += c.emb[1]; a.pages += d.pages; return a; }, { tr: 0, jus: 0, ext: 0, emb: [0, 0], pages: 0 });
-  const oth = incOther ? OTHERS.reduce((a, o) => a + o.cost, 0) : 0;
-  const lines = [
-    [`Traducciones (${s.pages} pág.)`, f(s.tr)],
-    [`Ministerio de Justicia (${on.length} doc.)`, f(s.jus)],
-    [`Asuntos Exteriores (${on.length} doc.)`, f(s.ext)],
-    [`Embajada de Turquía (${s.pages} pág.)`, range(s.emb)],
-  ];
-  if (incOther) lines.push(["Conseguir documentos y visado", f(oth)]);
-  $("sumLines").innerHTML = lines.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
-  const tot = [s.tr + s.jus + s.ext + s.emb[0] + oth, s.tr + s.jus + s.ext + s.emb[1] + oth];
-  $("sumTotal").textContent = range(tot);
-  $("others").innerHTML = OTHERS.map((o) => `<li><span>${o.name}</span><b>${o.approx ? "≈ " : ""}${f(o.cost)}</b></li>`).join("");
-  $("others").classList.toggle("is-off", !incOther);
-  const msg = `Hola, he visto los requisitos del visado en la web. Mi estimación es ${range(tot)} (${on.map((d) => `${d.name}: ${d.pages} pág.`).join(", ")}). ¿Me ayudáis con las traducciones y legalizaciones?`;
+  const act = DOCS.filter((d) => !(d.optional && !d.on));
+  const s = act.reduce((a, d) => {
+    const c = costOf(d);
+    a.req += c.req || 0; a.tr += c.tr; a.leg += c.leg;
+    if (c.pending) a.pend.push(d.name.toLowerCase());
+    if (d.pages) a.legDocs++;
+    if (!d.has) a.reqN++;
+    a.pages += d.pages;
+    return a;
+  }, { req: 0, tr: 0, leg: 0, pend: [], legDocs: 0, reqN: 0, pages: 0 });
+
+  $("sumLines").innerHTML = [
+    [`Solicitar documentos (${s.reqN})`, f(s.req) + (s.pend.length ? "*" : "")],
+    [`Traducción (${s.pages} pág.)`, f(s.tr)],
+    [`Legalización: Justicia y Exteriores (${s.legDocs} doc.)`, f(s.leg)],
+  ].map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
+  const total = s.req + s.tr + s.leg;
+  $("sumTotal").textContent = f(total);
+  const pend = $("sumPending");
+  pend.hidden = !s.pend.length;
+  pend.textContent = s.pend.length ? `* Más lo que cueste solicitar: ${s.pend.join(", ")}. Te lo confirmamos en la oficina.` : "";
+
+  // Embajada: aparte (visado + legalización por documento)
+  const emb = PRICE.emb.map((p) => p * s.legDocs);
+  $("embVisa").textContent = f(PRICE.visa);
+  $("embDocsN").textContent = `${s.legDocs} documentos × ${range(PRICE.emb)}`;
+  $("embDocs").textContent = range(emb);
+  $("embTotal").textContent = range([PRICE.visa + emb[0], PRICE.visa + emb[1]]);
+
+  const missing = act.filter((d) => !d.has).map((d) => d.name).join(", ");
+  const msg = `Hola, he usado la calculadora de requisitos de la web. Documentos, traducción y legalización: ${f(total)}${s.pend.length ? " (más la solicitud de algunos documentos)" : ""}. ${missing ? `Me faltan: ${missing}.` : "Ya tengo todos los documentos."} ¿Me ayudáis con los trámites?`;
   $("sumWa").href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
-  try { localStorage.setItem("req-calc", JSON.stringify({ ...Object.fromEntries(DOCS.map((d) => [d.id, { pages: d.pages, on: d.on }])), incOther })); } catch {}
+  try { localStorage.setItem("req-calc2", JSON.stringify(Object.fromEntries(DOCS.map((d) => [d.id, { has: d.has, pages: d.pages, on: d.on }])))); } catch {}
 }
-$("crows").addEventListener("click", (e) => {
+
+$("clist").addEventListener("click", (e) => {
   const b = e.target.closest("button[data-act]"); if (!b) return;
-  const d = DOCS.find((x) => x.id === b.closest(".crow").dataset.id);
-  d.pages = Math.max(1, Math.min(10, d.pages + (b.dataset.act === "plus" ? 1 : -1)));
-  if (!d.on) d.on = true;
-  renderRows(); renderSum();
+  const d = DOCS.find((x) => x.id === b.closest(".cdoc").dataset.id);
+  if (b.dataset.act === "has") d.has = b.dataset.v === "1";
+  if (b.dataset.act === "plus") d.pages = Math.min(10, d.pages + 1);
+  if (b.dataset.act === "minus") d.pages = Math.max(1, d.pages - 1);
+  renderList(); renderSum();
+  const again = document.querySelector(`.cdoc[data-id="${d.id}"] button[data-act="${b.dataset.act}"]${b.dataset.v ? `[data-v="${b.dataset.v}"]` : ""}`);
+  again?.focus({ preventScroll: true });
 });
-$("crows").addEventListener("change", (e) => {
+$("clist").addEventListener("change", (e) => {
   if (e.target.dataset.act !== "on") return;
-  DOCS.find((x) => x.id === e.target.closest(".crow").dataset.id).on = e.target.checked;
-  renderRows(); renderSum();
+  DOCS.find((x) => x.id === e.target.closest(".cdoc").dataset.id).on = e.target.checked;
+  renderList(); renderSum();
 });
-$("incOther").addEventListener("change", (e) => { incOther = e.target.checked; renderSum(); });
-renderRows(); renderSum();
+renderList(); renderSum();
 
 // ===== Lista de documentos (se recuerda en este dispositivo) =====
 const boxes = [...document.querySelectorAll(".dlist input[type=checkbox]")];

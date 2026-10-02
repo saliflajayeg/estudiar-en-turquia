@@ -784,3 +784,55 @@ h3{letter-spacing:-.01em}
 @media (max-width:760px){.crow{grid-template-columns:1fr auto}.crow [data-l]::after{content:" FCFA";color:var(--muted);font-weight:600;margin-left:.25rem}.crow [data-l]{justify-content:flex-start}.crow [data-l]::before{flex:1}}
 .csum__total strong{font-size:1.5rem;white-space:nowrap}
 .csum .btn{white-space:nowrap;font-size:.92rem}
+
+/* calculadora v2: tarjetas con “Lo tengo / No lo tengo” */
+.clist{display:flex;flex-direction:column;gap:.7rem}
+.cdoc{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1rem 1.15rem;transition:opacity .2s ease,border-color .2s ease}
+.cdoc.is-off{opacity:.6;border-style:dashed}
+.cdoc__top{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.cdoc__name{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.cdoc__name h3{font-family:var(--sans);font-size:1rem;font-weight:800;letter-spacing:0}
+.cdoc__note{font-size:.72rem;font-weight:700;color:#1f7a4c;background:#E3F4EA;padding:.15rem .5rem;border-radius:999px}
+.have{display:inline-flex;background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:3px}
+.have button{border:0;background:none;border-radius:999px;padding:.42rem .9rem;font:700 .82rem var(--sans);color:var(--muted);cursor:pointer;transition:background .2s ease,color .2s ease,transform .1s ease;white-space:nowrap}
+.have button.is-on[data-v="1"]{background:#1f7a4c;color:#fff}
+.have button.is-on[data-v="0"]{background:var(--navy);color:#fff}
+.have button:active{transform:scale(.95)}
+.have button:disabled{cursor:default;opacity:.5}
+.cdoc__bottom{display:flex;align-items:center;gap:.8rem;margin-top:.8rem;flex-wrap:wrap}
+.cdoc__skip{font-size:.85rem;color:var(--muted);margin-top:.5rem}
+.cchips{display:flex;flex-wrap:wrap;gap:.4rem;flex:1}
+.cchip{display:flex;flex-direction:column;background:var(--cream);border-radius:12px;padding:.35rem .7rem;font-weight:800;font-size:.86rem;white-space:nowrap;line-height:1.25}
+.cchip small{font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cchip--req{background:#FDE7E8;color:var(--red-d)}
+.cchip--req small{color:var(--red-d);opacity:.8}
+.cdoc__tot{margin-left:auto;font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--navy);white-space:nowrap;text-align:right;line-height:1.2}
+.cdoc__tot small{display:block;font-family:var(--sans);font-size:.7rem;font-weight:700;color:var(--red-d)}
+.clist__fine{font-size:.8rem;color:var(--muted);margin-top:.9rem}
+.cside{display:flex;flex-direction:column;gap:1rem;position:sticky;top:90px}
+.cside .csum{position:static}
+.cemb{background:#fff;border:1px solid var(--line);border-radius:22px;padding:1.3rem 1.3rem 1.2rem}
+.cemb__h{display:flex;gap:.8rem;align-items:flex-start;margin-bottom:.8rem}
+.cemb__ic{flex:none;width:40px;height:40px;border-radius:12px;background:var(--cream);display:grid;place-items:center;font-size:1.2rem}
+.cemb h3{font-family:var(--sans);font-size:1rem;font-weight:800;letter-spacing:0}
+.cemb__h p{font-size:.82rem;color:var(--muted)}
+.cemb__lines div{display:flex;justify-content:space-between;gap:1rem;padding:.55rem 0;border-top:1px solid var(--line);font-size:.88rem}
+.cemb__lines dt small{display:block;font-size:.76rem;color:var(--muted)}
+.cemb__lines dd{font-weight:800;white-space:nowrap;text-align:right}
+.cemb__total{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;border-top:2px solid var(--navy);padding-top:.7rem;margin-top:.2rem}
+.cemb__total span{font-size:.75rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.cemb__total strong{font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--navy);white-space:nowrap}
+@media (max-width:1020px){.cside{position:static}}
+@media (max-width:620px){
+  .cdoc__top{flex-direction:column;align-items:stretch;gap:.7rem}
+  .have{align-self:stretch}
+  .have button{flex:1}
+  .cdoc__tot{margin-left:0;width:100%;text-align:left;border-top:1px dashed var(--line);padding-top:.6rem;display:flex;justify-content:space-between;align-items:baseline}
+  .cdoc__tot small{display:inline}
+}
+.cdoc .crow__pages{width:auto;gap:.4rem;flex:none}
+.cdoc .crow__pages b{white-space:nowrap;font-size:.85rem;padding:0 .2rem}
+.cemb__ic{background:#FDE7E8}
+.cemb__total{flex-direction:column;align-items:flex-start;gap:.15rem}
+.cemb__total strong{font-size:1.35rem}
+@media (min-width:1021px){.calc{grid-template-columns:minmax(0,1fr) 340px}}

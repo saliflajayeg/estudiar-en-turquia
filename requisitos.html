@@ -61,9 +61,9 @@
       <li><span class="lflow__n">1</span><div><h3>Traducción al inglés</h3><p>Por un traductor.</p><strong class="lflow__p" data-price="tr"></strong><small>por página</small></div></li>
       <li><span class="lflow__n">2</span><div><h3>Ministerio de Justicia</h3><p>Se legaliza el original y la traducción.</p><strong class="lflow__p" data-price="jus"></strong><small>el original + la traducción</small></div></li>
       <li><span class="lflow__n">3</span><div><h3>Asuntos Exteriores</h3><p>Otra vez el original y la traducción.</p><strong class="lflow__p" data-price="ext"></strong><small>el original + la traducción</small></div></li>
-      <li class="lflow__last"><span class="lflow__n">4</span><div><h3>Embajada de Turquía</h3><p>Se legalizan el día de la cita del visado.</p><strong class="lflow__p" data-price="emb"></strong><small>por página · se paga ese día</small></div></li>
+      <li class="lflow__last"><span class="lflow__n">4</span><div><h3>Embajada de Turquía</h3><p>Se legalizan el día de la cita, junto con el visado.</p><strong class="lflow__p" data-price="emb"></strong><small>por documento · se paga en la embajada</small></div></li>
     </ol>
-    <p class="req-note"><strong>Ejemplo:</strong> un certificado de bachillerato de 1 página cuesta <span id="exOne"></span> en total entre traducción, legalizaciones y embajada.</p>
+    <p class="req-note"><strong>Ejemplo:</strong> traducir y legalizar un certificado de bachillerato de 1 página cuesta <span id="exOne"></span> (traducción + Justicia + Exteriores).</p>
   </div>
 </section>
 
@@ -125,27 +125,34 @@
     <div class="req-head">
       <p class="eyebrow">Calculadora</p>
       <h2>¿Cuánto vas a pagar?</h2>
-      <p class="lead">Ajusta el número de páginas de cada documento. El total se calcula al momento. Importes en FCFA.</p>
+      <p class="lead">Marca si ya tienes cada documento. Si no lo tienes, sumamos lo que cuesta solicitarlo. Importes en FCFA.</p>
     </div>
 
     <div class="calc">
       <div class="calc__main">
-        <div class="ctable" role="table" aria-label="Coste por documento">
-          <div class="crow crow--head" role="row"><span role="columnheader">Documento</span><span role="columnheader">Páginas</span><span role="columnheader">Traducción</span><span role="columnheader">Legalizar</span><span role="columnheader">Embajada</span><span role="columnheader">Total (FCFA)</span></div>
-          <div id="crows"></div>
-        </div>
-
-        <label class="cswitch"><input type="checkbox" id="incOther" checked><span class="cswitch__ui"></span><span><strong>Incluir lo que cuesta conseguir los documentos y el visado</strong><small>Antecedentes penales, certificado médico, seguro de viaje, reserva del billete y visado</small></span></label>
-        <ul class="others" id="others"></ul>
+        <div class="clist" id="clist"></div>
+        <p class="clist__fine">El precio de solicitar el certificado de bachillerato, la hoja académica, el certificado de legalización de estudios y la selectividad depende de cada centro: te lo confirmamos en la oficina.</p>
       </div>
 
-      <aside class="csum" aria-live="polite">
-        <p class="eyebrow">Tu estimación</p>
-        <dl class="csum__lines" id="sumLines"></dl>
-        <div class="csum__total"><small>Total aproximado</small><strong id="sumTotal"></strong></div>
-        <p class="csum__fine">No incluye el depósito de la universidad (≈ 1.000 USD), el billete de avión, ni los honorarios de la agencia. Precios orientativos.</p>
-        <a class="btn btn--red btn--block" id="sumWa" target="_blank" rel="noopener" href="#">Pedir ayuda con los documentos</a>
-        <a class="btn btn--line btn--block" href="index.html#cita">Reservar cita en la oficina</a>
+      <aside class="cside">
+        <div class="csum" aria-live="polite">
+          <p class="eyebrow">Tu estimación</p>
+          <dl class="csum__lines" id="sumLines"></dl>
+          <div class="csum__total"><small>Documentos, traducción y legalización</small><strong id="sumTotal"></strong></div>
+          <p class="csum__fine" id="sumPending" hidden></p>
+          <p class="csum__fine">No incluye el depósito de la universidad (≈ 1.000 USD), el billete de avión, ni los honorarios de la agencia. Precios orientativos.</p>
+          <a class="btn btn--red btn--block" id="sumWa" target="_blank" rel="noopener" href="#">Pedir ayuda con los documentos</a>
+          <a class="btn btn--line btn--block" href="index.html#cita">Reservar cita en la oficina</a>
+        </div>
+
+        <div class="cemb" aria-live="polite">
+          <div class="cemb__h"><span class="cemb__ic" aria-hidden="true"><svg viewBox="0 0 30 20" width="30" height="20"><rect width="30" height="20" rx="3" fill="#E30A17"/><circle cx="11.5" cy="10" r="5" fill="#fff"/><circle cx="12.75" cy="10" r="4" fill="#E30A17"/><path fill="#fff" d="M17.3 10l3.4-1.1-2.1 2.9V8.2l2.1 2.9z"/></svg></span><div><h3>En la embajada de Turquía</h3><p>Se paga allí mismo, el día de la cita del visado.</p></div></div>
+          <dl class="cemb__lines">
+            <div><dt>Visado de estudiante</dt><dd id="embVisa"></dd></div>
+            <div><dt>Legalización de tus documentos<small id="embDocsN"></small></dt><dd id="embDocs"></dd></div>
+          </dl>
+          <div class="cemb__total"><span>Total en la embajada</span><strong id="embTotal"></strong></div>
+        </div>
       </aside>
     </div>
   </div>
