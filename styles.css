@@ -630,3 +630,16 @@ h3{letter-spacing:-.01em}
 }
 .drawer__x{z-index:2}
 .rrow{animation-duration:.3s}
+
+/* logos de universidades (iniciales debajo como respaldo) */
+.rrow__mono,.prog__mono,.sugg__logo,.drawer__logo{position:relative;overflow:hidden}
+.rrow__mono img,.prog__mono img,.sugg__logo img,.drawer__logo img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:3px}
+.rrow__mono,.prog__mono{border-radius:14px;box-shadow:inset 0 0 0 1px var(--line)}
+.rrow__mono:has(img),.prog__mono:has(img){background:#fff}
+.sugg__logo{background:hsl(var(--h) 42% 30%);border-radius:10px;box-shadow:inset 0 0 0 1px var(--line)}
+.sugg__logo span{font-family:var(--serif);font-size:.72rem;font-weight:700}
+.drawer__logo{display:grid;place-items:center;width:64px;height:64px;border-radius:16px;background:hsl(var(--h) 42% 30%);color:#fff;font-family:var(--serif);font-weight:700;box-shadow:0 8px 24px -12px rgba(11,22,48,.35),inset 0 0 0 1px var(--line)}
+.drawer__logo:empty{display:none}
+.drawer__logo img{padding:5px}
+.rrow__mono{width:52px;height:52px}
+.rrow__mono img,.prog__mono img{padding:2px}

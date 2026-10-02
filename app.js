@@ -15,9 +15,9 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&l
 let currency = "xaf";
 
 const ROWS = D.R.map(([es, en, ui, deg, lang, price, orig, cur, note, campus, per], i) => {
-  const [uni, city] = D.U[ui];
+  const [uni, city, , slug] = D.U[ui];
   const rate = cur === "EUR" ? D.eur : D.rate;
-  return { i, es, en, uni, city, deg, lang, price, orig, cur, note, campus, per, xaf: price != null ? price * rate : null, origXaf: orig != null ? orig * rate : null, kEs: norm(es), kEn: norm(en), kUni: norm(uni) };
+  return { i, es, en, uni, city, slug, deg, lang, price, orig, cur, note, campus, per, xaf: price != null ? price * rate : null, origXaf: orig != null ? orig * rate : null, kEs: norm(es), kEn: norm(en), kUni: norm(uni) };
 }).filter((r) => r.xaf != null);
 
 const fmt = (r, which = "xaf") => {
@@ -31,6 +31,8 @@ const short = (xaf) => (currency === "usd" ? `${group(Math.round(xaf / RATE / 10
 const perLabel = (r) => (r.per === "P" ? "programa completo" : r.per === "S" ? "por semestre" : "por año");
 const mono = (u) => u.replace(/University|Universitesi|of|the|Istanbul|İstanbul|Cyprus/gi, "").trim().split(/\s+/).map((w) => w[0]).join("").slice(0, 3).toUpperCase();
 const hue = (s) => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
+// Logo de la universidad (img/unis/<slug>.webp); si falla, quedan las iniciales
+const logo = (r, cls) => `<span class="${cls}" style="--h:${hue(r.uni)}"><span>${esc(mono(r.uni) || "U")}</span>${r.slug ? `<img src="img/unis/${r.slug}.webp" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ""}</span>`;
 const yearly = (rows) => rows.filter((r) => r.per === "Y");
 const minXaf = (rows) => { const y = yearly(rows); const src = y.length ? y : rows; return src.length ? Math.min(...src.map((r) => r.xaf)) : null; };
 const LORD = { "Inglés": 0, "Turco": 1 };
@@ -45,7 +47,7 @@ const PROGS = (() => {
   });
   return [...m.values()].map((p) => ({ ...p, unis: new Set(p.rows.map((r) => r.uni)).size }));
 })();
-const UNIS = [...new Set(ROWS.map((r) => r.uni))].map((u) => ({ name: u, k: norm(u), rows: ROWS.filter((r) => r.uni === u) }));
+const UNIS = [...new Set(ROWS.map((r) => r.uni))].map((u) => { const rows = ROWS.filter((r) => r.uni === u); return { name: u, k: norm(u), rows, slug: rows[0].slug }; });
 
 // ===== Estado =====
 const state = { q: "", exact: null, uni: null, deg: "B", lang: "", sort: "asc", shown: PAGE };
@@ -69,7 +71,7 @@ function renderSugg() {
   if (!sItems.length) { sugg.hidden = true; hq.setAttribute("aria-expanded", "false"); return; }
   sugg.innerHTML = sItems.map((s, i) => s.type === "p"
     ? `<li role="option" id="sg${i}" data-i="${i}"><span class="sugg__ico">◆</span><span class="sugg__t"><strong>${esc(s.p.name)}</strong><small>${s.p.unis} universidad${s.p.unis > 1 ? "es" : ""} · desde ${short(minXaf(s.p.rows))}</small></span></li>`
-    : `<li role="option" id="sg${i}" data-i="${i}" class="sugg__uni"><span class="sugg__ico">⌂</span><span class="sugg__t"><strong>${esc(s.u.name)}</strong><small>Universidad · ${s.u.rows.length} programas</small></span></li>`).join("");
+    : `<li role="option" id="sg${i}" data-i="${i}" class="sugg__uni">${logo({ uni: s.u.name, slug: s.u.slug }, "sugg__ico sugg__logo")}<span class="sugg__t"><strong>${esc(s.u.name)}</strong><small>Universidad · ${s.u.rows.length} programas</small></span></li>`).join("");
   sugg.hidden = false;
   hq.setAttribute("aria-expanded", "true");
 }
@@ -166,7 +168,7 @@ function row(r, i) {
   const o = r.orig && r.orig > r.price ? `<s>${fmt(r, "orig")}</s>` : "";
   return `<article class="rrow" style="animation-delay:${Math.min(i, 6) * 18}ms">
     <div class="rrow__uni">
-      <span class="rrow__mono" style="--h:${hue(r.uni)}">${esc(mono(r.uni) || "U")}</span>
+      ${logo(r, "rrow__mono")}
       <div><h3>${esc(state.exact ? r.uni : r.es)}</h3><p>${esc(state.exact ? r.city : `${r.uni} · ${r.city}`)}${r.campus ? ` · ${esc(r.campus)}` : ""}</p></div>
     </div>
     <div class="rrow__tags"><span class="t t--lang">${esc(r.lang)}</span>${state.deg ? "" : `<span class="t">${DEG[r.deg]}</span>`}${r.note ? `<span class="t t--note">${esc(r.note)}</span>` : ""}</div>
@@ -206,6 +208,7 @@ let lastFocus = null, chosen = null;
 function openDrawer(r) {
   chosen = r;
   lastFocus = document.activeElement;
+  $("dLogo").innerHTML = logo(r, "drawer__logo");
   $("dProg").textContent = r.es;
   $("dUni").textContent = `${r.uni} · ${r.city}${r.campus ? " · campus " + r.campus : ""}`;
   $("dTags").innerHTML = `<span class="t t--lang">${esc(r.lang)}</span><span class="t">${DEG[r.deg]}</span>${r.note ? `<span class="t t--note">${esc(r.note)}</span>` : ""}`;

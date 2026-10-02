@@ -11,10 +11,10 @@ const group = (n) => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "
 
 // Pre-procesado: cada programa como objeto con texto de búsqueda y precio en FCFA
 const ROWS = D.R.map(([es, en, ui, deg, lang, price, orig, cur, note, campus, per], i) => {
-  const [uni, city, country] = D.U[ui];
+  const [uni, city, country, slug] = D.U[ui];
   const rate = cur === "EUR" ? D.eur : D.rate;
   return {
-    i, es, en, uni, city, country, deg, lang, cur, note, campus, per,
+    i, es, en, uni, city, country, slug, deg, lang, cur, note, campus, per,
     price, orig,
     xaf: price != null ? price * rate : null,
     xafOrig: orig != null ? orig * rate : null,
@@ -158,7 +158,7 @@ function card(r) {
   const o = r.orig != null && r.orig > r.price ? money(r.xafOrig, r.orig, r.cur) : null;
   const msg = `Hola, me interesa el programa "${r.es}" (${DEG_SHORT[r.deg]}, en ${r.lang.toLowerCase()}) en ${r.uni}, ${r.city}. ¿Me podéis informar?`;
   return `<article class="prog">
-    <div class="prog__mono" style="--h:${hue(r.uni)}">${esc(mono(r.uni))}</div>
+    <div class="prog__mono" style="--h:${hue(r.uni)}"><span>${esc(mono(r.uni))}</span>${r.slug ? `<img src="img/unis/${r.slug}.webp" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ""}</div>
     <div class="prog__main">
       <h3>${esc(r.es)}</h3>
       ${r.en && norm(r.en) !== norm(r.es) ? `<p class="prog__en">${esc(r.en)}</p>` : ""}
