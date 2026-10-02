@@ -1,2 +1,4 @@
 # Herramientas locales (extracción y limpieza de datos)
 _raw/
+# Vídeo promocional (archivos pesados)
+brag-output/
