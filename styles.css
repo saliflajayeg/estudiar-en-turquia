@@ -836,3 +836,5 @@ h3{letter-spacing:-.01em}
 .cemb__total{flex-direction:column;align-items:flex-start;gap:.15rem}
 .cemb__total strong{font-size:1.35rem}
 @media (min-width:1021px){.calc{grid-template-columns:minmax(0,1fr) 340px}}
+.cdoc__pages{font-size:.72rem;font-weight:700;color:var(--navy);background:#E6ECF8;padding:.15rem .55rem;border-radius:999px}
+.cchip--leg{background:#F1F3F8}

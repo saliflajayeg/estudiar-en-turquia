@@ -11,7 +11,7 @@ const WHATSAPP = "905466175501";
 
 // Documentos de la calculadora.
 // req: lo que cuesta solicitarlo (null = depende del centro, a consultar)
-// pages: páginas a traducir (0 = no se traduce ni se legaliza)
+// pages: páginas del documento (fijas; 0 = no se traduce ni se legaliza)
 // has: valor inicial de “Lo tengo”; optional: se puede quitar (selectividad)
 const DOCS = [
   { id: "bach", name: "Certificado de bachillerato", req: null, pages: 1, has: true },
@@ -39,14 +39,16 @@ $("exOne").textContent = f(PRICE.tr + LEG);
 
 // ===== Estado (se recuerda en este dispositivo) =====
 const saved = (() => { try { return JSON.parse(localStorage.getItem("req-calc2") || "null"); } catch { return null; } })();
-DOCS.forEach((d) => { if (d.on === undefined) d.on = true; if (saved?.[d.id]) Object.assign(d, saved[d.id]); });
+DOCS.forEach((d) => { if (d.on === undefined) d.on = true; if (saved?.[d.id]) { d.has = saved[d.id].has ?? d.has; d.on = saved[d.id].on ?? d.on; } });
 
 const costOf = (d) => {
   const req = d.has ? 0 : d.req;               // null si no se sabe
   const tr = PRICE.tr * d.pages;
-  const leg = d.pages ? LEG : 0;
-  return { req, tr, leg, tot: (req || 0) + tr + leg, pending: !d.has && d.req == null };
+  const jus = d.pages ? 2 * PRICE.jus : 0;     // original + traducción
+  const ext = d.pages ? 2 * PRICE.ext : 0;
+  return { req, tr, jus, ext, leg: jus + ext, tot: (req || 0) + tr + jus + ext, pending: !d.has && d.req == null };
 };
+const pagesTxt = (n) => `${n} página${n > 1 ? "s" : ""}`;
 
 function renderList() {
   $("clist").innerHTML = DOCS.map((d) => {
@@ -54,15 +56,16 @@ function renderList() {
     const off = d.optional && !d.on;
     const chips = [
       !d.has ? `<span class="cchip cchip--req"><small>Solicitarlo</small>${c.pending ? "a consultar" : (d.approx ? "≈ " : "") + f(c.req)}</span>` : "",
-      d.pages ? `<span class="cchip"><small>Traducir (${d.pages} pág.)</small>${f(c.tr)}</span>` : "",
-      d.pages ? `<span class="cchip"><small>Legalizar</small>${f(c.leg)}</span>` : "",
+      d.pages ? `<span class="cchip"><small>Traducir (${pagesTxt(d.pages)})</small>${f(c.tr)}</span>` : "",
+      d.pages ? `<span class="cchip cchip--leg"><small>Legalizar en Justicia</small>${f(c.jus)}</span>` : "",
+      d.pages ? `<span class="cchip cchip--leg"><small>Legalizar en Exteriores</small>${f(c.ext)}</span>` : "",
     ].join("");
     return `<article class="cdoc${off ? " is-off" : ""}" data-id="${d.id}">
       <div class="cdoc__top">
         <div class="cdoc__name">
           ${d.optional ? `<label class="mini-switch"><input type="checkbox" data-act="on" ${d.on ? "checked" : ""} aria-label="Incluir ${d.name}"><span></span></label>` : ""}
           <h3>${d.name}${d.optional ? ' <em class="tag-opt">Opcional</em>' : ""}</h3>
-          ${d.pages ? "" : '<span class="cdoc__note">No se traduce</span>'}
+          ${d.pages ? `<span class="cdoc__pages">${pagesTxt(d.pages)}</span>` : '<span class="cdoc__note">No se traduce</span>'}
         </div>
         <div class="have" role="group" aria-label="¿Tienes este documento?">
           <button type="button" data-act="has" data-v="1" class="${d.has ? "is-on" : ""}" ${off ? "disabled" : ""}>Lo tengo</button>
@@ -70,7 +73,6 @@ function renderList() {
         </div>
       </div>
       ${off ? '<p class="cdoc__skip">No se incluye en el cálculo.</p>' : `<div class="cdoc__bottom">
-        ${d.pages ? `<span class="crow__pages" aria-label="Páginas"><button type="button" data-act="minus" aria-label="Menos páginas">−</button><b>${d.pages} pág.</b><button type="button" data-act="plus" aria-label="Más páginas">+</button></span>` : ""}
         <div class="cchips">${chips}</div>
         <strong class="cdoc__tot">${f(c.tot)}${c.pending ? '<small>+ solicitud</small>' : ""}</strong>
       </div>`}
@@ -82,20 +84,21 @@ function renderSum() {
   const act = DOCS.filter((d) => !(d.optional && !d.on));
   const s = act.reduce((a, d) => {
     const c = costOf(d);
-    a.req += c.req || 0; a.tr += c.tr; a.leg += c.leg;
+    a.req += c.req || 0; a.tr += c.tr; a.jus += c.jus; a.ext += c.ext;
     if (c.pending) a.pend.push(d.name.toLowerCase());
     if (d.pages) a.legDocs++;
     if (!d.has) a.reqN++;
     a.pages += d.pages;
     return a;
-  }, { req: 0, tr: 0, leg: 0, pend: [], legDocs: 0, reqN: 0, pages: 0 });
+  }, { req: 0, tr: 0, jus: 0, ext: 0, pend: [], legDocs: 0, reqN: 0, pages: 0 });
 
   $("sumLines").innerHTML = [
     [`Solicitar documentos (${s.reqN})`, f(s.req) + (s.pend.length ? "*" : "")],
-    [`Traducción (${s.pages} pág.)`, f(s.tr)],
-    [`Legalización: Justicia y Exteriores (${s.legDocs} doc.)`, f(s.leg)],
+    [`Traducción (${pagesTxt(s.pages)})`, f(s.tr)],
+    [`Legalizar en el Ministerio de Justicia (${s.legDocs} doc.)`, f(s.jus)],
+    [`Legalizar en el Ministerio de Exteriores (${s.legDocs} doc.)`, f(s.ext)],
   ].map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
-  const total = s.req + s.tr + s.leg;
+  const total = s.req + s.tr + s.jus + s.ext;
   $("sumTotal").textContent = f(total);
   const pend = $("sumPending");
   pend.hidden = !s.pend.length;
@@ -111,15 +114,13 @@ function renderSum() {
   const missing = act.filter((d) => !d.has).map((d) => d.name).join(", ");
   const msg = `Hola, he usado la calculadora de requisitos de la web. Documentos, traducción y legalización: ${f(total)}${s.pend.length ? " (más la solicitud de algunos documentos)" : ""}. ${missing ? `Me faltan: ${missing}.` : "Ya tengo todos los documentos."} ¿Me ayudáis con los trámites?`;
   $("sumWa").href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
-  try { localStorage.setItem("req-calc2", JSON.stringify(Object.fromEntries(DOCS.map((d) => [d.id, { has: d.has, pages: d.pages, on: d.on }])))); } catch {}
+  try { localStorage.setItem("req-calc2", JSON.stringify(Object.fromEntries(DOCS.map((d) => [d.id, { has: d.has, on: d.on }])))); } catch {}
 }
 
 $("clist").addEventListener("click", (e) => {
   const b = e.target.closest("button[data-act]"); if (!b) return;
   const d = DOCS.find((x) => x.id === b.closest(".cdoc").dataset.id);
   if (b.dataset.act === "has") d.has = b.dataset.v === "1";
-  if (b.dataset.act === "plus") d.pages = Math.min(10, d.pages + 1);
-  if (b.dataset.act === "minus") d.pages = Math.max(1, d.pages - 1);
   renderList(); renderSum();
   const again = document.querySelector(`.cdoc[data-id="${d.id}"] button[data-act="${b.dataset.act}"]${b.dataset.v ? `[data-v="${b.dataset.v}"]` : ""}`);
   again?.focus({ preventScroll: true });
