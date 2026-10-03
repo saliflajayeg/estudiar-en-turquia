@@ -838,3 +838,25 @@ h3{letter-spacing:-.01em}
 @media (min-width:1021px){.calc{grid-template-columns:minmax(0,1fr) 340px}}
 .cdoc__pages{font-size:.72rem;font-weight:700;color:var(--navy);background:#E6ECF8;padding:.15rem .55rem;border-radius:999px}
 .cchip--leg{background:#F1F3F8}
+
+/* accesos rápidos: menú y portada */
+.btn--navlite{border:1.5px solid rgba(255,255,255,.45);color:#fff;background:rgba(255,255,255,.08);backdrop-filter:blur(6px)}
+.nav.is-solid .btn--navlite,.nav.is-open .btn--navlite{border-color:var(--line);color:var(--navy);background:#fff}
+@media (hover:hover) and (pointer:fine){.btn--navlite:hover{background:rgba(255,255,255,.18)}.nav.is-solid .btn--navlite:hover{border-color:var(--navy)}}
+.nav__links{gap:1.2rem}
+.hs__quick{display:none}
+.why__cta{margin-top:2rem}
+#porque{scroll-margin-top:70px}
+@media (max-width:1280px) and (min-width:861px){.nav__links a:not(.btn){display:none}}
+.nav__links a{white-space:nowrap}
+.nav__links{gap:1.1rem}
+.nav__links .btn--sm{padding:.6rem 1rem}
+@media (max-width:860px){
+  .nav__links .btn--navlite{margin-top:.6rem;padding:1rem}
+  .hs__quick{display:flex;flex-wrap:wrap;justify-content:center;gap:.45rem;margin:-.6rem 0 1.3rem;animation:rise .8s both}
+  .hs__quick a{color:#fff;text-decoration:none;font-weight:700;font-size:.84rem;padding:.48rem .95rem;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);backdrop-filter:blur(6px);-webkit-tap-highlight-color:transparent;transition:transform .12s ease}
+  .hs__quick a:active{transform:scale(.95)}
+  .hs__quick .hs__quick--red{background:var(--red);border-color:var(--red)}
+}
+@media (max-width:860px){.hs__quick{flex-wrap:nowrap;gap:.35rem}.hs__quick a{font-size:.76rem;padding:.44rem .72rem;white-space:nowrap}}
+@media (max-width:360px){.hs__quick a{font-size:.7rem;padding:.4rem .55rem}}
