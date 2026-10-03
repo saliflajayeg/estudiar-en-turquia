@@ -124,6 +124,7 @@ function run({ q = "", exact = null, uni = null }, scroll = true) {
   const u = new URL(location); u.searchParams.set("q", state.q); history.replaceState(null, "", u.pathname + u.search + "#resultados");
   $("resHome").hidden = true; $("resList").hidden = false;
   render();
+  window.track?.("search", { q: state.q, x: state.exact ? "carrera" : state.uni ? "universidad" : "texto" });
   if (scroll) $("resultados").scrollIntoView({ behavior: "smooth" });
 }
 function reset() {
@@ -207,6 +208,7 @@ const drawer = $("drawer");
 let lastFocus = null, chosen = null;
 function openDrawer(r) {
   chosen = r;
+  window.track?.("elegir", { q: r.es, x: `${r.uni} · ${r.city}` });
   lastFocus = document.activeElement;
   $("dLogo").innerHTML = logo(r, "drawer__logo");
   $("dProg").textContent = r.es;
@@ -345,6 +347,8 @@ form.addEventListener("submit", (e) => {
   err.hidden = true;
   const dia = new Date(f.fecha.value + "T12:00").toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
   const text = ["Hola, quiero reservar una cita en la oficina (Estudiar en Turquía).", `• ${f.who.value}: ${f.nombre.value.trim()}`, `• Teléfono: ${f.tel.value.trim()}`, `• Día: ${dia} · ${f.hora.value}`, `• Interés: ${f.interes.value}`, f.msg.value.trim() ? `• Mensaje: ${f.msg.value.trim()}` : ""].filter(Boolean).join("\n");
+  window.track?.("cita", { q: f.interes.value });
+  window.track?.("whatsapp", { q: "Formulario de cita" });
   window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
 });
 

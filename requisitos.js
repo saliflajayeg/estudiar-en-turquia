@@ -119,6 +119,7 @@ function renderSum() {
 
 $("clist").addEventListener("click", (e) => {
   const b = e.target.closest("button[data-act]"); if (!b) return;
+  if (!window._calcT) { window._calcT = 1; window.track?.("calc", { q: "Usó la calculadora" }); }
   const d = DOCS.find((x) => x.id === b.closest(".cdoc").dataset.id);
   if (b.dataset.act === "has") d.has = b.dataset.v === "1";
   renderList(); renderSum();

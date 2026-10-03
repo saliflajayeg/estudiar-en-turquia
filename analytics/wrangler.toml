@@ -1,0 +1,9 @@
+name = "estudiar-turquia-stats"
+main = "src/index.js"
+compatibility_date = "2026-07-16"
+
+# Base de datos de eventos (visitas, búsquedas, elecciones, WhatsApp)
+[[d1_databases]]
+binding = "DB"
+database_name = "estudiar-turquia-stats"
+database_id = "91f1d503-d070-4d03-a65d-fc39b11d16e5"

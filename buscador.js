@@ -98,6 +98,7 @@ const qEl = document.getElementById("q");
 qEl.addEventListener("input", () => {
   clearTimeout(qTimer);
   qTimer = setTimeout(() => { state.q = qEl.value; update(); }, 120);
+  clearTimeout(qEl._t); qEl._t = setTimeout(() => { if (qEl.value.trim().length >= 3) window.track?.("search", { q: qEl.value.trim(), x: "buscador avanzado" }); }, 1500);
 });
 
 // Búsquedas rápidas
@@ -167,7 +168,7 @@ function card(r) {
     </div>
     <div class="prog__side">
       ${p ? `<p class="prog__price">${o ? `<s>${o}</s>` : ""}<strong>${p}</strong><small>${r.per === "P" ? "programa completo" : r.per === "S" ? "por semestre" : "por año"}</small></p>` : `<p class="prog__price prog__price--ask"><strong>Consultar precio</strong></p>`}
-      <a class="btn btn--red btn--sm" target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}">Me interesa</a>
+      <a class="btn btn--red btn--sm" data-track="Me interesa (buscador avanzado)" target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}">Me interesa</a>
     </div>
   </article>`;
 }
