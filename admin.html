@@ -12,6 +12,7 @@
 <style>
 :root{--navy:#0B1630;--navy2:#13234A;--red:#E30A17;--cream:#F7F2EA;--paper:#FFFDF9;--ink:#141A2A;--muted:#5D6478;--line:#E7E0D3;--bar:#13306B;--bar-soft:#C9D4EC;--serif:"Fraunces",Georgia,serif;--sans:"Manrope",system-ui,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
 body{font-family:var(--sans);background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100vh}
 .top{background:var(--navy);color:#fff;padding:16px 0}
 .wrap{width:min(1180px,100% - 32px);margin-inline:auto}
@@ -127,7 +128,7 @@ const $ = (id) => document.getElementById(id);
 const g = (n) => Number(n || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const PAGES = { "/": "Portada (buscador)", "/programas.html": "Buscador avanzado", "/requisitos.html": "Requisitos y costes" };
-const SRC = { directo: "Directo / enlace guardado", whatsapp: "WhatsApp", facebook: "Facebook", instagram: "Instagram", tiktok: "TikTok", google: "Google" };
+const SRC = { directo: "Directo / enlace guardado", whatsapp: "WhatsApp", facebook: "Facebook", fb: "Facebook", instagram: "Instagram", ig: "Instagram", tiktok: "TikTok", google: "Google" };
 const DEV = { movil: "Móvil", ordenador: "Ordenador" };
 const COUNTRY = { GQ: "Guinea Ecuatorial", TR: "Turquía", CM: "Camerún", GA: "Gabón", ES: "España", NG: "Nigeria", US: "Estados Unidos", FR: "Francia" };
 let days = 7, pw = "";
@@ -175,7 +176,12 @@ function chart(perDay) {
 }
 
 async function load() {
-  const r = await fetch(`${API}/stats?days=${days}`, { headers: { Authorization: `Bearer ${pw}` } });
+  const btn = document.querySelector("#login .btn");
+  btn.textContent = "Cargando…"; btn.disabled = true;
+  let r;
+  try { r = await fetch(`${API}/stats?days=${days}`, { headers: { Authorization: `Bearer ${pw}` } }); }
+  catch { showLogin("Sin conexión. Inténtalo de nuevo."); return; }
+  finally { btn.textContent = "Entrar"; btn.disabled = false; }
   if (r.status === 401) { showLogin("Contraseña incorrecta."); return; }
   if (!r.ok) { showLogin("No se pudo cargar. Inténtalo de nuevo."); return; }
   const d = await r.json();
