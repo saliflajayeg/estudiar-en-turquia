@@ -19,7 +19,7 @@ form.addEventListener("submit", (e) => {
   err.hidden = true;
   const ofi = f.oficina.value === "Sí" ? `Sí${f.dir.value.trim() ? ` (${f.dir.value.trim()})` : ""}` : "No";
   const text = [
-    "Hola, quiero colaborar con Asesoría de Viajes y traer estudiantes para estudiar en Turquía.",
+    `${window.visit?.FROM_WEB || "Hola,"} Quiero colaborar con Asesoría de Viajes y traer estudiantes para estudiar en Turquía.`,
     `• Nombre: ${f.nombre.value.trim()}`,
     `• Teléfono: ${f.tel.value.trim()}`,
     `• Soy: ${f.tipo.value}`,

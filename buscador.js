@@ -98,7 +98,7 @@ const qEl = document.getElementById("q");
 qEl.addEventListener("input", () => {
   clearTimeout(qTimer);
   qTimer = setTimeout(() => { state.q = qEl.value; update(); }, 120);
-  clearTimeout(qEl._t); qEl._t = setTimeout(() => { if (qEl.value.trim().length >= 3) window.track?.("search", { q: qEl.value.trim(), x: "buscador avanzado" }); }, 1500);
+  clearTimeout(qEl._t); qEl._t = setTimeout(() => { if (qEl.value.trim().length >= 3) window.visit?.search(qEl.value), window.track?.("search", { q: qEl.value.trim(), x: "buscador avanzado" }); }, 1500);
 });
 
 // Búsquedas rápidas
@@ -157,7 +157,7 @@ const hue = (s) => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
 function card(r) {
   const p = money(r.xaf, r.price, r.cur);
   const o = r.orig != null && r.orig > r.price ? money(r.xafOrig, r.orig, r.cur) : null;
-  const msg = `Hola, me interesa el programa "${r.es}" (${DEG_SHORT[r.deg]}, en ${r.lang.toLowerCase()}) en ${r.uni}, ${r.city}. ¿Me podéis informar?`;
+  const msg = `${window.visit?.FROM_WEB || "Hola,"} Me interesa el programa "${r.es}" (${DEG_SHORT[r.deg]}, en ${r.lang.toLowerCase()}) en ${r.uni}, ${r.city}. ¿Me podéis informar?`;
   return `<article class="prog">
     <div class="prog__mono" style="--h:${hue(r.uni)}"><span>${esc(mono(r.uni))}</span>${r.slug ? `<img src="img/unis/${r.slug}.webp" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ""}</div>
     <div class="prog__main">
@@ -168,7 +168,7 @@ function card(r) {
     </div>
     <div class="prog__side">
       ${p ? `<p class="prog__price">${o ? `<s>${o}</s>` : ""}<strong>${p}</strong><small>${r.per === "P" ? "programa completo" : r.per === "S" ? "por semestre" : "por año"}</small></p>` : `<p class="prog__price prog__price--ask"><strong>Consultar precio</strong></p>`}
-      <a class="btn btn--red btn--sm" data-track="Me interesa (buscador avanzado)" target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}">Me interesa</a>
+      <a class="btn btn--red btn--sm" data-track="Me interesa (buscador avanzado)" data-ch="${esc(`${r.es} (${DEG_SHORT[r.deg]}) en ${r.uni}, ${r.city}${p ? `: ${p}` : ""}`)}" target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}">Me interesa</a>
     </div>
   </article>`;
 }

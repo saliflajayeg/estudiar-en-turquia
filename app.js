@@ -124,6 +124,7 @@ function run({ q = "", exact = null, uni = null }, scroll = true) {
   const u = new URL(location); u.searchParams.set("q", state.q); history.replaceState(null, "", u.pathname + u.search + "#resultados");
   $("resHome").hidden = true; $("resList").hidden = false;
   render();
+  window.visit?.search(state.q);
   window.track?.("search", { q: state.q, x: state.exact ? "carrera" : state.uni ? "universidad" : "texto" });
   if (scroll) $("resultados").scrollIntoView({ behavior: "smooth" });
 }
@@ -209,6 +210,7 @@ let lastFocus = null, chosen = null;
 function openDrawer(r) {
   chosen = r;
   window.track?.("elegir", { q: r.es, x: `${r.uni} · ${r.city}` });
+  window.visit?.choose(`${r.es} (${DEG[r.deg]}) en ${r.uni}, ${r.city}: ${group(Math.round(r.xaf / 5000) * 5000)} FCFA ${perLabel(r)}`);
   lastFocus = document.activeElement;
   $("dLogo").innerHTML = logo(r, "drawer__logo");
   $("dProg").textContent = r.es;
@@ -218,7 +220,7 @@ function openDrawer(r) {
   $("dXaf").textContent = `${group(Math.round(r.xaf / 5000) * 5000)} FCFA`;
   $("dUsd").textContent = r.cur === "EUR" ? `${group(r.price)} €` : `${group(r.price)} USD`;
   $("dOrig").textContent = r.orig && r.orig > r.price ? `Precio sin descuento: ${r.cur === "EUR" ? group(r.orig) + " €" : group(r.orig) + " USD"}. El descuento se aplica al inscribirte a través de una agencia.` : "";
-  const msg = `Hola, quiero empezar la inscripción gratuita para:\n• Carrera: ${r.es} (${DEG[r.deg]}, en ${r.lang.toLowerCase()})\n• Universidad: ${r.uni}, ${r.city}\n• Precio visto en la web: ${r.cur === "EUR" ? group(r.price) + " €" : group(r.price) + " USD"} ${perLabel(r)}\n¿Qué documentos os envío?`;
+  const msg = `${window.visit?.FROM_WEB || "Hola,"} Quiero empezar la inscripción gratuita para:\n• Carrera: ${r.es} (${DEG[r.deg]}, en ${r.lang.toLowerCase()})\n• Universidad: ${r.uni}, ${r.city}\n• Precio visto en la web: ${group(Math.round(r.xaf / 5000) * 5000)} FCFA (${r.cur === "EUR" ? group(r.price) + " €" : group(r.price) + " USD"}) ${perLabel(r)}\n¿Qué documentos os envío?`;
   $("dWa").href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
   clearTimeout(hideTimer);
   stopSpring();
@@ -343,14 +345,33 @@ form.addEventListener("submit", (e) => {
   e.preventDefault();
   const f = form.elements;
   const err = $("formErr");
-  if (!f.nombre.value.trim() || !f.tel.value.trim() || !f.fecha.value) { err.hidden = false; return; }
+  if (!f.nombre.value.trim() || !f.tel.value.trim() || !f.fecha.value) { err.textContent = "Por favor, completa tu nombre, teléfono y el día."; err.hidden = false; return; }
+  const wd = new Date(f.fecha.value + "T12:00").getDay();
+  if (wd === 0 || wd === 6) { err.textContent = "La oficina abre de lunes a viernes. Elige otro día, por favor."; err.hidden = false; return; }
   err.hidden = true;
   const dia = new Date(f.fecha.value + "T12:00").toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
-  const text = ["Hola, quiero reservar una cita en la oficina (Estudiar en Turquía).", `• ${f.who.value}: ${f.nombre.value.trim()}`, `• Teléfono: ${f.tel.value.trim()}`, `• Día: ${dia} · ${f.hora.value}`, `• Interés: ${f.interes.value}`, f.msg.value.trim() ? `• Mensaje: ${f.msg.value.trim()}` : ""].filter(Boolean).join("\n");
+  const seen = window.visit?.lines() || [];
+  const text = [
+    "📅 *SOLICITUD DE CITA* · desde la página web",
+    "Hola, ya he visto la información y los precios en la web y me gustaría ir a la oficina para hablar en persona.",
+    "",
+    `• ${f.who.value}: ${f.nombre.value.trim()}`,
+    `• Teléfono: ${f.tel.value.trim()}`,
+    `• Día: ${dia} · ${f.hora.value}`,
+    `• Me interesa: ${f.interes.value}`,
+    f.msg.value.trim() ? `• Mensaje: ${f.msg.value.trim()}` : null,
+    ...(seen.length ? ["", "*Lo que he visto en la web:*", ...seen] : []),
+  ].filter((l) => l !== null).join("\n");
   window.track?.("cita", { q: f.interes.value });
   window.track?.("whatsapp", { q: "Formulario de cita" });
   window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+  $("formOk").hidden = false;
 });
+
+// Secciones que el visitante ha leído (para dar contexto en WhatsApp)
+const SEEN = { precios: "Precios y paquetes", vivir: "Coste de vida en Turquía", padres: "Información para padres", proceso: "Cómo funciona el proceso" };
+const seenIO = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { window.visit?.seen(SEEN[e.target.id]); seenIO.unobserve(e.target); } }), { rootMargin: "-45% 0px -45% 0px" });
+Object.keys(SEEN).forEach((id) => $(id) && seenIO.observe($(id)));
 
 // ===== Arranque =====
 $("stP").textContent = group(ROWS.length);

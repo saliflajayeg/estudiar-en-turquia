@@ -112,7 +112,8 @@ function renderSum() {
   $("embTotal").textContent = range([PRICE.visa + emb[0], PRICE.visa + emb[1]]);
 
   const missing = act.filter((d) => !d.has).map((d) => d.name).join(", ");
-  const msg = `Hola, he usado la calculadora de requisitos de la web. Documentos, traducción y legalización: ${f(total)}${s.pend.length ? " (más la solicitud de algunos documentos)" : ""}. ${missing ? `Me faltan: ${missing}.` : "Ya tengo todos los documentos."} ¿Me ayudáis con los trámites?`;
+  window.visit?.calc(`${f(total)} en documentos, traducción y legalización${missing ? ` (me faltan: ${missing})` : " (ya tengo todos los documentos)"}`);
+  const msg = `${window.visit?.FROM_WEB || "Hola,"} He usado la calculadora de requisitos. Documentos, traducción y legalización: ${f(total)}${s.pend.length ? " (más la solicitud de algunos documentos)" : ""}. ${missing ? `Me faltan: ${missing}.` : "Ya tengo todos los documentos."} ¿Me ayudáis con los trámites?`;
   $("sumWa").href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
   try { localStorage.setItem("req-calc2", JSON.stringify(Object.fromEntries(DOCS.map((d) => [d.id, { has: d.has, on: d.on }])))); } catch {}
 }
