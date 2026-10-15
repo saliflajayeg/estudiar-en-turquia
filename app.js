@@ -95,6 +95,31 @@ hq.addEventListener("keydown", (e) => {
 });
 sugg.addEventListener("mousedown", (e) => { const li = e.target.closest("li"); if (li) { e.preventDefault(); pick(+li.dataset.i); } });
 document.addEventListener("click", (e) => { if (!e.target.closest(".sbar__f--q")) sugg.hidden = true; });
+// Con la lista abierta, la portada pasa por delante de la tarjeta de resultados (que la solapa)
+// y la lista nunca baja más allá de lo visible: si no cabe, se desplaza por dentro.
+const hs = sugg.closest(".hs");
+const fitSugg = () => {
+  if (sugg.hidden) return;
+  const vh = window.visualViewport?.height || window.innerHeight;
+  sugg.style.maxHeight = `${Math.max(180, Math.min(430, vh - sugg.getBoundingClientRect().top - 12))}px`;
+};
+// Si la lista no cabe debajo del buscador, subimos el buscador cerca de arriba (también con el teclado del móvil abierto)
+const makeRoom = () => {
+  if (sugg.hidden) return;
+  const vh = window.visualViewport?.height || window.innerHeight;
+  const need = Math.min(430, sugg.scrollHeight);
+  if (vh - sugg.getBoundingClientRect().top - 12 >= need) return;
+  window.scrollTo({ top: hq.closest(".sbar").getBoundingClientRect().top + window.scrollY - 80, behavior: "smooth" });
+};
+let wasOpen = false;
+new MutationObserver(() => {
+  hs?.classList.toggle("hs--sugg", !sugg.hidden);
+  fitSugg();
+  if (!sugg.hidden && !wasOpen) setTimeout(makeRoom, 60);
+  wasOpen = !sugg.hidden;
+}).observe(sugg, { attributes: true, attributeFilter: ["hidden"], childList: true });
+window.visualViewport?.addEventListener("resize", () => { fitSugg(); setTimeout(makeRoom, 120); });
+window.addEventListener("scroll", fitSugg, { passive: true });
 $("sbar").addEventListener("submit", (e) => {
   e.preventDefault();
   const exact = PROGS.find((p) => norm(p.name) === norm(hq.value));

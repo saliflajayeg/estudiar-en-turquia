@@ -971,3 +971,6 @@ h3{letter-spacing:-.01em}
   .fdays{padding:1.4rem 1.2rem}
   .fdays ol{grid-template-columns:1fr;gap:1.1rem}
 }
+.hs.hs--sugg{z-index:3}
+/* sombra de "hay más" cuando la lista de sugerencias se desplaza por dentro */
+.sugg{background:linear-gradient(#fff 30%,rgba(255,255,255,0)) top/100% 36px no-repeat local,linear-gradient(rgba(255,255,255,0),#fff 70%) bottom/100% 36px no-repeat local,radial-gradient(farthest-side at 50% 0,rgba(11,22,48,.2),transparent) top/100% 12px no-repeat scroll,radial-gradient(farthest-side at 50% 100%,rgba(11,22,48,.2),transparent) bottom/100% 12px no-repeat scroll;background-color:#fff;overscroll-behavior:contain}
