@@ -974,3 +974,31 @@ h3{letter-spacing:-.01em}
 .hs.hs--sugg{z-index:3}
 /* sombra de "hay más" cuando la lista de sugerencias se desplaza por dentro */
 .sugg{background:linear-gradient(#fff 30%,rgba(255,255,255,0)) top/100% 36px no-repeat local,linear-gradient(rgba(255,255,255,0),#fff 70%) bottom/100% 36px no-repeat local,radial-gradient(farthest-side at 50% 0,rgba(11,22,48,.2),transparent) top/100% 12px no-repeat scroll,radial-gradient(farthest-side at 50% 100%,rgba(11,22,48,.2),transparent) bottom/100% 12px no-repeat scroll;background-color:#fff;overscroll-behavior:contain}
+
+/* ===== Beca Türkiye Bursları ===== */
+.bhero__row{display:flex;align-items:center;gap:1.2rem 1.6rem;flex-wrap:wrap}
+.bdate{display:flex;flex-direction:column;font-size:.95rem;color:rgba(255,255,255,.85);padding-left:1rem;border-left:3px solid var(--red)}
+.bdate b{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.6)}
+.bcover{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.bcover li{background:#fff;border:1px solid var(--line);border-radius:20px;padding:1.3rem 1.3rem 1.3rem 3.4rem;position:relative}
+.bcover li::before{content:"";position:absolute;left:1.2rem;top:1.4rem;width:1.4rem;height:1.4rem;border-radius:50%;background:var(--red) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3L15 7' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/80% no-repeat}
+.bcover b{display:block;font-family:var(--serif);font-size:1.1rem;margin-bottom:.15rem}
+.bcover span{color:var(--muted);font-size:.93rem}
+.breq{display:grid;grid-template-columns:1.15fr 1fr;gap:2.5rem 3rem;align-items:start}
+.breq .mini{margin-top:0}
+.btable{border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.btable>div{display:grid;grid-template-columns:1.2fr 1fr 1.1fr;gap:.8rem;padding:.9rem 1.1rem;border-top:1px solid var(--line);font-size:.95rem;align-items:start}
+.btable>div:first-child{border-top:0}
+.btable .btable__h{background:var(--navy);color:#fff;font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.btable small{display:block;color:var(--muted);font-size:.8rem;margin-top:.15rem}
+.bfoot{color:var(--muted);font-size:.9rem;margin-top:1rem;line-height:1.55}
+.bnote{margin-top:2rem;background:var(--cream);border-radius:22px;padding:1.6rem 1.8rem;border-left:5px solid var(--navy)}
+.bnote h3{font-size:1.2rem;margin-bottom:1rem}
+.bnote a{color:var(--navy);font-weight:700}
+.belig{border-radius:12px;padding:.75rem .9rem;font-size:.88rem;font-weight:600;line-height:1.45;background:#E7F7EE;color:#11643A}
+.belig.is-warn{background:#FFF4E0;color:#8A5300}
+.beca-band{background:var(--navy);color:#fff}
+.beca-band h2{color:#fff}
+.beca-band .lead{color:rgba(255,255,255,.8)}
+@media (max-width:1020px){.bcover{grid-template-columns:1fr 1fr}.breq{grid-template-columns:1fr}}
+@media (max-width:620px){.bcover{grid-template-columns:1fr}.btable>div{grid-template-columns:1fr 1fr}.btable>div>:first-child{grid-column:1/-1}.btable .btable__h>:first-child{display:none}}
