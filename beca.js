@@ -64,7 +64,7 @@ form.addEventListener("submit", (e) => {
     f.carrera.value.trim() ? `• Carrera que me gustaría: ${f.carrera.value.trim()}` : null,
     `• Ciudad: ${f.ciudad.value}`,
     "",
-    `Sé que la inscripción (${FEE}) se paga en la oficina. ¿Qué día puedo ir con mis documentos?`,
+    `Sé que la inscripción (${FEE}) y las traducciones al turco se pagan en la oficina. ¿Qué día puedo ir con mis documentos?`,
     extra.length ? "" : null,
     extra.length ? "*Lo que he visto en la web:*" : null,
     ...extra,
